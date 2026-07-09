@@ -1,10 +1,11 @@
-from dotenv import load_dotenv
-load_dotenv()
+
 import os
 import tempfile
 from pathlib import Path
 
 import streamlit as st
+from dotenv import load_dotenv
+load_dotenv()
 
 # LangChain imports
 from langchain_core.prompts import ChatPromptTemplate
