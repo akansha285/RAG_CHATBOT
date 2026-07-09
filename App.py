@@ -464,11 +464,14 @@ with st.sidebar:
     st.markdown("## ⚙️ Control Center")
     st.caption("Configure your RAG assistant and load the washing machine manual.")
 
-    openai_api_key = st.text_input(
-        "OpenAI API Key",
-        type="password",
-        placeholder="Paste your OpenAI API key here"
-    )
+ default_api_key = os.getenv("OPENAI_API_KEY", "")
+
+ openai_api_key = st.text_input(
+    "OpenAI API Key",
+    value=default_api_key,
+    type="password",
+    placeholder="Paste your OpenAI API key here"
+   )
 
     uploaded_file = st.file_uploader(
         "Upload Samsung Manual (HTML)",
