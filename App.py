@@ -527,8 +527,7 @@ if build_btn:
                 st.session_state.last_context_docs = []
 
             st.success("Knowledge base built successfully. Your AI assistant is ready.")
-        except Exception as e:
-            st.exception(e)
+       
 
 # =========================
 # HERO
