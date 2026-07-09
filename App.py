@@ -500,6 +500,10 @@ with st.sidebar:
 # =========================
 # BUILD RAG ON BUTTON CLICK
 # =========================
+
+# =========================
+# BUILD RAG ON BUTTON CLICK
+# =========================
 if build_btn:
     if not openai_api_key:
         st.error("Please enter your OpenAI API key.")
@@ -527,6 +531,12 @@ if build_btn:
                 st.session_state.last_context_docs = []
 
             st.success("Knowledge base built successfully. Your AI assistant is ready.")
+
+        except Exception as e:
+            st.error(f"Error while building knowledge base: {str(e)}")
+            st.exception(e)
+
+
        
 
 # =========================
