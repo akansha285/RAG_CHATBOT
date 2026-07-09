@@ -5,7 +5,6 @@ from pathlib import Path
 
 import streamlit as st
 from dotenv import load_dotenv
-load_dotenv()
 
 # LangChain imports
 from langchain_core.prompts import ChatPromptTemplate
@@ -15,6 +14,8 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_chroma import Chroma
 
+# Load environment variables from .env
+load_dotenv()
 
 # =========================
 # PAGE CONFIG
@@ -32,7 +33,6 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-    /* App background */
     .stApp {
         background:
             radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 28%),
@@ -42,19 +42,16 @@ st.markdown(
         color: #f8fafc;
     }
 
-    /* Main block spacing */
     .block-container {
         padding-top: 1.5rem;
         padding-bottom: 2rem;
         max-width: 1250px;
     }
 
-    /* Hide Streamlit default menu/footer */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
 
-    /* Hero */
     .hero-card {
         background: linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
         border: 1px solid rgba(255,255,255,0.12);
@@ -143,7 +140,6 @@ st.markdown(
         background: rgba(255,255,255,0.16);
     }
 
-    /* Section card */
     .glass-card {
         background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
         border: 1px solid rgba(255,255,255,0.10);
@@ -167,14 +163,6 @@ st.markdown(
         color: #cbd5e1;
         font-size: 0.96rem;
         line-height: 1.6;
-    }
-
-    /* Stats */
-    .metric-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
-        margin-top: 8px;
     }
 
     .metric-card {
@@ -203,7 +191,6 @@ st.markdown(
         color: #cbd5e1;
     }
 
-    /* Chat bubbles */
     .user-bubble {
         background: linear-gradient(135deg, #2563eb, #7c3aed);
         color: white;
@@ -235,7 +222,6 @@ st.markdown(
         line-height: 1.7;
     }
 
-    /* Suggestion chips */
     div.stButton > button {
         width: 100%;
         border-radius: 14px;
@@ -254,7 +240,6 @@ st.markdown(
         background: linear-gradient(135deg, rgba(59,130,246,0.28), rgba(168,85,247,0.28));
     }
 
-    /* Inputs */
     .stTextInput > div > div > input,
     .stTextArea textarea {
         background: rgba(255,255,255,0.08) !important;
@@ -270,7 +255,6 @@ st.markdown(
         border-radius: 14px !important;
     }
 
-    /* File uploader */
     section[data-testid="stFileUploader"] {
         background: rgba(255,255,255,0.06);
         border: 1px dashed rgba(255,255,255,0.18);
@@ -278,7 +262,6 @@ st.markdown(
         padding: 8px;
     }
 
-    /* Sidebar */
     section[data-testid="stSidebar"] {
         background: linear-gradient(180deg, #0b1220 0%, #101826 100%);
         border-right: 1px solid rgba(255,255,255,0.06);
@@ -288,7 +271,6 @@ st.markdown(
         color: #f8fafc !important;
     }
 
-    /* Divider label */
     .section-heading {
         font-size: 1.18rem;
         font-weight: 800;
@@ -317,7 +299,6 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
 
 # =========================
 # SESSION STATE
@@ -414,7 +395,6 @@ Answer:"""
 
 
 def ask_rag(question):
-    """Query RAG chain and also collect retrieved docs for display."""
     retriever = st.session_state.retriever
     rag_chain = st.session_state.rag_chain
 
@@ -427,7 +407,6 @@ def ask_rag(question):
 
 
 def render_chat_history():
-    """Render chat bubbles from session state."""
     if not st.session_state.messages:
         st.markdown(
             """
@@ -464,14 +443,17 @@ with st.sidebar:
     st.markdown("## ⚙️ Control Center")
     st.caption("Configure your RAG assistant and load the washing machine manual.")
 
- default_api_key = os.getenv("OPENAI_API_KEY", "")
+    # Load key from .env locally, or from Streamlit Cloud secrets
+    default_api_key = os.getenv("OPENAI_API_KEY", "")
+    if not default_api_key and "OPENAI_API_KEY" in st.secrets:
+        default_api_key = st.secrets["OPENAI_API_KEY"]
 
- openai_api_key = st.text_input(
-    "OpenAI API Key",
-    value=default_api_key,
-    type="password",
-    placeholder="Paste your OpenAI API key here"
-   )
+    openai_api_key = st.text_input(
+        "OpenAI API Key",
+        value=default_api_key,
+        type="password",
+        placeholder="Paste your OpenAI API key here"
+    )
 
     uploaded_file = st.file_uploader(
         "Upload Samsung Manual (HTML)",
@@ -515,7 +497,6 @@ with st.sidebar:
         """
     )
 
-
 # =========================
 # BUILD RAG ON BUTTON CLICK
 # =========================
@@ -549,7 +530,6 @@ if build_btn:
         except Exception as e:
             st.exception(e)
 
-
 # =========================
 # HERO
 # =========================
@@ -577,7 +557,6 @@ st.markdown(
 )
 
 st.write("")
-
 
 # =========================
 # STATUS / METRICS
@@ -622,7 +601,6 @@ with colC:
 
 st.write("")
 
-
 # =========================
 # MAIN LAYOUT
 # =========================
@@ -643,7 +621,6 @@ with left_col:
     )
 
     render_chat_history()
-
     st.write("")
 
     user_question = st.chat_input("Ask something about the washing machine manual...")
@@ -659,7 +636,6 @@ with left_col:
 
             st.session_state.messages.append({"role": "assistant", "content": answer})
             st.session_state.last_context_docs = context_docs
-
             st.rerun()
 
 with right_col:
