@@ -1,4 +1,5 @@
-```python
+from dotenv import load_dotenv
+load_dotenv()
 import os
 import tempfile
 from pathlib import Path
@@ -742,4 +743,4 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-```
+
