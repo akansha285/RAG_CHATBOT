@@ -448,12 +448,6 @@ with st.sidebar:
     if not default_api_key and "OPENAI_API_KEY" in st.secrets:
         default_api_key = st.secrets["OPENAI_API_KEY"]
 
-    openai_api_key = st.text_input(
-        "OpenAI API Key",
-        value=default_api_key,
-        type="password",
-        placeholder="Paste your OpenAI API key here"
-    )
 
     uploaded_file = st.file_uploader(
         "Upload Samsung Manual (HTML)",
