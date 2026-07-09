@@ -1,1 +1,26 @@
+```gitignore id="g5k2pa"
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+myenv/
+.env/
+
+# Secret environment file
+.env
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Local vector DB / cache
+chroma_db/
+
+# OS junk files
+.DS_Store
+Thumbs.db
+```
 
